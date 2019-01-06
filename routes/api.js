@@ -17,7 +17,8 @@ module.exports = function (app) {
 
   app.route('/api/stock-prices')
     .get(function (req, res){
-        console.log(req.params.stock);
+        console.log(req.query);
+        console.log(req.query.stock);
     });
     
 };
