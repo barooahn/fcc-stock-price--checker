@@ -26,23 +26,10 @@ module.exports = function (app) {
         let loops = 1;
         if (typeof stock == 'object' ){loops = 2} 
         for (let i = 0; i < loops; i ++){ 
-          const stock_url = 'https://api.iextrading.com/1.0/stock/'+ stock[i] + '/book';
-
-          // const request = async () => {
-          //     const response = await fetch('https://api.com/values/1');
-          //     const json = await response.json();
-          //     console.log(json);
-          // }
-          const request = async () => {
-            await fetch(stock_url)
-            .then(function(response) {
-              return response.json();
-            })
-            .then(function(price) {
-              result = {"stock":stock[i],"price":price.quote.latestPrice,"rel_likes":1};
-              console.log(result);
-            });
-          }
+         
+            const json = await this.getprice(stock);  // command waits until completion
+            console.log(json.hello); 
+        
         }
       res.json(result);
       }
@@ -50,5 +37,11 @@ module.exports = function (app) {
   
   
   //fetch();
+  
+  async function getprice(stock) {
+      return fetch('https://api.iextrading.com/1.0/stock/'+ stock + '/book')
+          .then((response)=>response.json())
+          .then((price)=>{return {"stock":stock,"price":price.quote.latestPrice,"rel_likes":1}});
+  }
     
 };
