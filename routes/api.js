@@ -27,8 +27,8 @@ module.exports = function (app) {
         if (typeof stock == 'object' ){loops = 2} 
         for (let i = 0; i < loops; i ++){ 
          
-            const json = await this.getprice(stock);  // command waits until completion
-            console.log(json.hello); 
+            const json = this.getprice(stock);  // command waits until completion
+            console.log(json); 
         
         }
       res.json(result);
@@ -38,10 +38,11 @@ module.exports = function (app) {
   
   //fetch();
   
+    
+};
+
   async function getprice(stock) {
-      return fetch('https://api.iextrading.com/1.0/stock/'+ stock + '/book')
+      return await fetch('https://api.iextrading.com/1.0/stock/'+ stock + '/book')
           .then((response)=>response.json())
           .then((price)=>{return {"stock":stock,"price":price.quote.latestPrice,"rel_likes":1}});
   }
-    
-};
