@@ -23,7 +23,7 @@ module.exports = function (app) {
       const stock1 = req.query.stock
       console.log(stock1);
     
-      const stock_url = 'https://api.iextrading.com/1.0/stock/'+ stock1 + '/book'
+      const stock_url = 'https://api.iextrading.com/1.0/stock/'+ stock1 + '/book';
 
       fetch(stock_url)
       .then(function(response) {
