@@ -10,6 +10,7 @@
 
 var expect = require('chai').expect;
 var MongoClient = require('mongodb');
+const fetch = require('node-fetch');
 
 const CONNECTION_STRING = process.env.DB; //MongoClient.connect(CONNECTION_STRING, function(err, db) {});
 
@@ -23,7 +24,9 @@ module.exports = function (app) {
       console.log(stock1);
     }
     
-    fetch('http://example.com/movies.json')
+    const stock_url = 
+    
+    fetch('https://api.iextrading.com/1.0/stock/MSFT/book')
     .then(function(response) {
       return response.json();
     })
