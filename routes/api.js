@@ -22,17 +22,17 @@ module.exports = function (app) {
     if(req.query.stock) {
       const stock1 = req.query.stock
       console.log(stock1);
+    
+      const stock_url = 'https://api.iextrading.com/1.0/stock/'+ stock1 + '/book'
+
+      fetch(stock_url)
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(myJson) {
+        res.json(myJson.quote.latestPrice);
+      });
     }
-    
-    const stock_url = 
-    
-    fetch('https://api.iextrading.com/1.0/stock/MSFT/book')
-    .then(function(response) {
-      return response.json();
-    })
-    .then(function(myJson) {
-      console.log(JSON.stringify(myJson));
-    });
   });
   
   
