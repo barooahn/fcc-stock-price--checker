@@ -18,10 +18,12 @@ module.exports = function (app) {
 
   app.route('/api/stock-prices')
     .get(function (req, res){
-        console.log(req.query);
+        //console.log(req.query);
     if(req.query.stock) {
       const stock1 = req.query.stock
-      console.log(stock1);
+      //console.log(stock1);
+      if (stock1){console.log(typeof stock1)}
+      
     
       const stock_url = 'https://api.iextrading.com/1.0/stock/'+ stock1 + '/book';
 
