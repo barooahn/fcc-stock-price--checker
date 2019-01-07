@@ -18,9 +18,9 @@ module.exports = function (app) {
 
   app.route('/api/stock-prices')
     .get(function (req, res){
-      let result = [];
         //console.log(req.query);
       if(req.query.stock) {
+        let result =[];
         const stock = req.query.stock
         //console.log(stock1);
         let loops = 1;
@@ -35,10 +35,10 @@ module.exports = function (app) {
           .then(function(price) {
             result.push({"stock":stock[i],"price":price.quote.latestPrice,"rel_likes":1});
           });
+        console.log(result);
         }
-      }
-      console.log(result);
       res.json(result);
+      }
   });
   
   
