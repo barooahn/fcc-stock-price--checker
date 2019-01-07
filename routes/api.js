@@ -28,12 +28,18 @@ module.exports = function (app) {
         for (let i = 0; i < loops; i ++){ 
           const stock_url = 'https://api.iextrading.com/1.0/stock/'+ stock[i] + '/book';
 
-          fetch(stock_url)
+          // const request = async () => {
+          //     const response = await fetch('https://api.com/values/1');
+          //     const json = await response.json();
+          //     console.log(json);
+          // }
+          
+          result[i] = fetch(stock_url)
           .then(function(response) {
             return response.json();
           })
           .then(function(price) {
-            result.push({"stock":stock[i],"price":price.quote.latestPrice,"rel_likes":1});
+            return {"stock":stock[i],"price":price.quote.latestPrice,"rel_likes":1};
           });
         console.log(result);
         }
