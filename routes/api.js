@@ -33,15 +33,16 @@ module.exports = function (app) {
           //     const json = await response.json();
           //     console.log(json);
           // }
-          
-          result[i] = fetch(stock_url)
-          .then(function(response) {
-            return response.json();
-          })
-          .then(function(price) {
-            return {"stock":stock[i],"price":price.quote.latestPrice,"rel_likes":1};
-          });
-        console.log(result);
+          const request = async () => {
+            await fetch(stock_url)
+            .then(function(response) {
+              return response.json();
+            })
+            .then(function(price) {
+              result = {"stock":stock[i],"price":price.quote.latestPrice,"rel_likes":1};
+              console.log(result);
+            });
+          }
         }
       res.json(result);
       }
