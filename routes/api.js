@@ -34,7 +34,7 @@ module.exports = function (app) {
 
         console.log('result', result);
         //result[i] = request();
-          console.log('request',  await request());
+          console.log('request',  wait request());
         }
       res.json(result);
       }
