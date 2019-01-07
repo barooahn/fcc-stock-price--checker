@@ -19,7 +19,7 @@ module.exports = function (app) {
   app.route('/api/stock-prices')
     .get(function (req, res){
         //console.log(req.query);
-    let result = {"stockData": {}};
+    let result = [];
     if(req.query.stock) {
       const stock = req.query.stock
       //console.log(stock1);
@@ -32,11 +32,12 @@ module.exports = function (app) {
         .then(function(response) {
           return response.json();
         })
-        .then(function(myJson) {
-          
-          res.json(myJson.quote.latestPrice);
+        .then(function(price) {
+          result.push({"stock":stock[i],"price":price.quote.latestPrice,"rel_likes":1});
+          console.log(result);
         });
       }
+      res.json(result);
     }
   });
   
