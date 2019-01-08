@@ -30,6 +30,23 @@ module.exports = function (app) {
         let stock = req.query.stock
         let loops = 1;
         if (typeof stock == 'object'){
+           if(req.query.like) {
+          
+            async.parallel([   
+                likeController.getLikes(stock, count),
+                likeController.getLikes(stock, count)
+            ],
+
+
+            function(err, results) {
+              // results is array containing array of results of your queries
+            });
+             
+             
+          
+           }
+          
+          
           const stock1 = stock[0].toUpperCase();
           const stock2 = stock[1].toUpperCase();
           fetch('https://api.iextrading.com/1.0/stock/market/batch?symbols='+stock1+','+stock2+'&types=quote')
