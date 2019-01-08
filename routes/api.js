@@ -18,8 +18,19 @@ const CONNECTION_STRING = process.env.DB; //MongoClient.connect(CONNECTION_STRIN
 
 module.exports = function (app) {
   
+  
+  //addlike
+      //check database for userIp
+      //if not there save userIp, stock
+      //if there remove 
+  
+  //getlikes
+  
+  
+  
   const likes = (userIp, stock) => {
-        //check database for ip      
+        //check database for ip 
+        let result;
         MongoClient.connect(CONNECTION_STRING, function(err, db) {
             const collection = db.collection(project);
             db.collection.findAndModify({
@@ -29,12 +40,14 @@ module.exports = function (app) {
                 $push: {userIp: userIp}
               },
               new: true,   // return new doc if one is upserted
-              upsert: true{ // insert the document if it does not exist
-            function(err,doc){
-            (!err) ? res.json(doc.value) : res.send('could not add comment '+ req.params.id +' '+ err);
-          }  
-        );
+              upsert: true}, // insert the document if it does not exist
+              function(err,doc){
+                if(err) throw(err)
+                result = doc.userIp.count();
+              }  
+            );
         db.close();
+        return result;
       });
         //if there update stock liked
         //if not add stock to db under ip address
