@@ -73,7 +73,8 @@ module.exports = function (app) {
       console.log(req.query);
      
       if(req.query.stock) {
-        let result =[];
+        let result;
+        let likes;
         let stock = req.query.stock
         let loops = 1;
         if (typeof stock == 'object' ){
@@ -92,8 +93,10 @@ module.exports = function (app) {
           stock = stock.toUpperCase();
           if(req.query.like) {
             const userIp = req.connection.remoteAddress;
-            const like = req.query.like;      
-            const likes = this.likes(userIp, stock);
+            const like = req.query.like;   
+            console.log(userIp);
+            this.addLike(userIp, stock);
+            likes = this.getLikes(stock);
           }
           fetch('https://api.iextrading.com/1.0/stock/'+ stock + '/book')  
             .then(res => res.json())
