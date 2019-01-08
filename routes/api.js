@@ -30,7 +30,7 @@ module.exports = function (app) {
           const request = async (stock) => {  
             const response =  await fetch('https://api.iextrading.com/1.0/stock/'+ stock + '/book')
             const data = await response.json();
-            return {"stock":stock[i],"price":data.quote.latestPrice,"rel_likes":1}};
+            result= {"stock":stock[i],"price":data.quote.latestPrice,"rel_likes":1}};
 
         console.log('result', result);
         //result[i] = request();
