@@ -18,22 +18,25 @@ const CONNECTION_STRING = process.env.DB; //MongoClient.connect(CONNECTION_STRIN
 
 module.exports = function (app) {
   
-  const likes = (ip, stock) => {
-              //get ip of user
-
+  const likes = (userIp, stock) => {
         //check database for ip      
         MongoClient.connect(CONNECTION_STRING, function(err, db) {
             const collection = db.collection(project);
             db.collection.findAndModify({
-              query: { ip: userIp },
+              query: { stock: stock },
               update: {
-                $setOnInsert: { ip: userIp,  }
+                $setOnInsert: { stock: stock },
+                $push: {userIp: userIp}
               },
               new: true,   // return new doc if one is upserted
-              upsert: true // insert the document if it does not exist
-            })
-        });
-              //if there update stock liked
+              upsert: true{ // insert the document if it does not exist
+            function(err,doc){
+            (!err) ? res.json(doc.value) : res.send('could not add comment '+ req.params.id +' '+ err);
+          }  
+        );
+        db.close();
+      });
+        //if there update stock liked
         //if not add stock to db under ip address
         
         //query database for stock and return number of results
@@ -74,7 +77,7 @@ module.exports = function (app) {
           fetch('https://api.iextrading.com/1.0/stock/'+ stock + '/book')  
             .then(res => res.json())
             .then(data => {
-              result = {stockdata:{"stock":stock, price:data.quote.latestPrice,"likes":1}};
+              result = {stockdata:{"stock":stock, price:data.quote.latestPrice,"likes":likes}};
               res.json(result) 
             }).catch(function(response){
               alert("No valid response");
