@@ -25,14 +25,16 @@ module.exports = function (app) {
         //console.log(stock1);
         let loops = 1;
         if (typeof stock == 'object' ){
+          console.log('stock1 ', stock[0]);
+          console.log('stock2 ', stock[1]);
           const request = async () => {  
-            const response =  await fetch('https://api.iextrading.com/1.0/stock/market/batch?symbols='+stock[0],stock[1]+'&types=quote')
+            const response = await fetch('https://api.iextrading.com/1.0/stock/market/batch?symbols='+stock[0],stock[1]+'&types=quote');
             const data = await response.json();
-            
+            console.log(data);
             //result= {"stock":stock[i],"price":data.quote.latestPrice,"rel_likes":1}};
-
-        }  
-          loops = 2} 
+          }    
+          request();
+//         loops = 2} 
 //         for (let i = 0; i < loops; i ++){ 
 //           console.log(stock)  
 //           const request = async (stock) => {  
@@ -49,7 +51,7 @@ module.exports = function (app) {
 
 
   
-//   });
+  });
   
   
   //fetch();
