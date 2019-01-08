@@ -8,20 +8,24 @@ const addLike = function(userIp, stock) {
   //if not there save userIp, stock
   //if there update stock
 
-  MongoClient.connect(CONNECTION_STRING, function(err, db) {
-    const collection = db.collection(project);
-    collection.findAndModify(
-      { userIp: userIp },
-      [],
-      {$set: { stock: stock }},
-      {new: true,   // return new doc if one is upserted
-      upsert: true}, // insert the document if it does not exist
-      function(err,doc){
-        if(err) throw(err)
-        //console.log(doc);
-      }  
-    );
-    db.close();
+  return new Promise((resolve, reject) => {
+    MongoClient.connect(CONNECTION_STRING, function(err, db) {
+      const collection = db.collection(project);
+      collection.findAndModify(
+        { userIp: userIp },
+        [],
+        {$set: { stock: stock }},
+        {new: true,   // return new doc if one is upserted
+        upsert: true}, // insert the document if it does not exist
+        function(err,doc){
+          if(err) reject(err)
+          resolve(true);   
+          //console.log(doc);
+          
+        }  
+      );
+      db.close();
+    });
   });
 }
 

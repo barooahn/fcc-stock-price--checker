@@ -54,20 +54,21 @@ module.exports = function (app) {
   
           if(req.query.like) {res.send('You can only like one stock')};
           
-        } else {
+        } else if(req.query.like) {
           stock = stock.toUpperCase();
-          if(req.query.like) {
+          
             const userIp = req.connection.remoteAddress;
             const like = req.query.like;   
             //console.log(userIp);
-            likeController.addLike(userIp, stock);    
-            likeController.getLikes(stock)
-              .then(function(count) {
-              console.log('count', count); 
+            Promise.all([
+              likeController.addLike(userIp, stock),
+              likeController.getLikes(stock)
+            ]).then((counts) => {
+              console.log('count', counts); 
               fetch('https://api.iextrading.com/1.0/stock/'+ stock + '/book')  
                 .then(res => res.json())
                 .then(data => {
-                  result = {stockdata:{"stock":stock, "price": data.quote.latestPrice,"likes":count}};
+                  result = {stockdata:{"stock":stock, "price": data.quote.latestPrice,"likes":counts[1]}};
                   res.json(result) 
                 }).catch(function(res){
                   res.send("Cannot find stock");
@@ -75,6 +76,23 @@ module.exports = function (app) {
             }, function(err) {
               res.send("database error" + err);
             });
+          } else {
+              const like = req.query.like;   
+              likeController.getLikes(stock)
+           .then((counts) => {
+              console.log('count', counts); 
+              fetch('https://api.iextrading.com/1.0/stock/'+ stock + '/book')  
+                .then(res => res.json())
+                .then(data => {
+                  result = {stockdata:{"stock":stock, "price": data.quote.latestPrice,"likes":counts[1]}};
+                  res.json(result) 
+                }).catch(function(res){
+                  res.send("Cannot find stock");
+                });  
+            }, function(err) {
+              res.send("database error" + err);
+            });
+            
           }
         }
       }
