@@ -13,12 +13,12 @@ const addLike = function(userIp, stock) {
     collection.findAndModify(
       { userIp: userIp },
       [],
-      {$setOnInsert: { stock: stock }},
+      {$set: { stock: stock }},
       {new: true,   // return new doc if one is upserted
       upsert: true}, // insert the document if it does not exist
       function(err,doc){
         if(err) throw(err)
-        console.log(doc);
+        //console.log(doc);
       }  
     );
     db.close();
@@ -31,12 +31,13 @@ const getLikes = function(stock) {
   MongoClient.connect(CONNECTION_STRING, function(err, db) {
     const collection = db.collection(project);
     result = collection.count({stock: stock}, function(err,count){
-        if(err) throw(err)
-        result = count;
-        console.log('çount',count);
+        if(err) throw(err);
+    db.close();  
+        return count;
       }  
     );
-    db.close();
+    console.log('result', result);
+    
     return result
   }); 
 }
