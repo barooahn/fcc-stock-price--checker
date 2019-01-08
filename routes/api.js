@@ -33,51 +33,27 @@ module.exports = function (app) {
         if (typeof stock == 'object'){
           const stock1 = stock[0].toUpperCase();
           const stock2 = stock[1].toUpperCase();
-
           Promise.all([
             likeController.getLikes(stock1),
             likeController.getLikes(stock2)
           ]).then((counts) => {
-            counts.reduce(count => ,0)
-          }).catch((error) => {
+            console.log(Math.abs(counts[0] - counts[1]))
+            fetch('https://api.iextrading.com/1.0/stock/market/batch?symbols='+stock1+','+stock2+'&types=quote')
+              .then(res => res.json())
+              .then(data => {
+                result = {stockdata:[{"stock":stock1,"price":data[stock1].quote.latestPrice,"rel_likes":1},
+                   {"stock":stock2,"price":data[stock2].quote.latestPrice,"rel_likes":1}]};
+                res.json(result) 
+              }).catch(function(response){
+                alert("No valid response");
+              });  
+          }).catch((err) => {
             throw(err);
           })  
-          
-          likeController.getLikes(stock1)
-              .then(function(image) {
-            console.log('Image loaded', image);
-          }, function(err) {
-            console.error('Error loading image', err);
-          });
-          
-          likeController.getLikes(stock1, function(err, count){
-            promise1 = count;    
-            console.log(count);
-          });
-          likeController.getLikes(stock2, function(err, count){
-            promise2 = count;  
-            console.log(count);
-          });
-
-          
-          Promise.all([promise1, promise2]).then(function(values) {
-            console.log(values);
-          console.log('promise1', promise1);
-          console.log('promise2', promise2);
-          });
-          
-          if(req.query.like) {}
+  
+          if(req.query.like) {res.send('You can only like one stock')};
          
           
-          fetch('https://api.iextrading.com/1.0/stock/market/batch?symbols='+stock1+','+stock2+'&types=quote')
-            .then(res => res.json())
-            .then(data => {
-              result = {stockdata:[{"stock":stock1,"price":data[stock1].quote.latestPrice,"rel_likes":1},
-                 {"stock":stock2,"price":data[stock2].quote.latestPrice,"rel_likes":1}]};
-              res.json(result) 
-            }).catch(function(response){
-              alert("No valid response");
-            });  
         } else {
           stock = stock.toUpperCase();
           if(req.query.like) {
@@ -85,7 +61,9 @@ module.exports = function (app) {
             const like = req.query.like;   
             //console.log(userIp);
             likeController.addLike(userIp, stock);
-            likeController.getLikes(stock, function(err, count){
+            
+            likeController.getLikes(stock)
+              .then(function(count) {
               //console.log('count', count); 
               fetch('https://api.iextrading.com/1.0/stock/'+ stock + '/book')  
                 .then(res => res.json())
@@ -95,8 +73,9 @@ module.exports = function (app) {
                 }).catch(function(response){
                   alert("No valid response");
                 });  
+            }, function(err) {
+              console.error('Error loading image', err);
             });
-            console.log('likes',likes);
           }
         }
       }
