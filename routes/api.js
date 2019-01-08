@@ -29,7 +29,7 @@ module.exports = function (app) {
         let likes;
         let stock = req.query.stock
         let loops = 1;
-        if (typeof stock == 'object' ){
+        if (typeof stock == 'object'){
           const stock1 = stock[0].toUpperCase();
           const stock2 = stock[1].toUpperCase();
           fetch('https://api.iextrading.com/1.0/stock/market/batch?symbols='+stock1+','+stock2+'&types=quote')
@@ -46,31 +46,22 @@ module.exports = function (app) {
           if(req.query.like) {
             const userIp = req.connection.remoteAddress;
             const like = req.query.like;   
-            console.log(userIp);
+            //console.log(userIp);
             likeController.addLike(userIp, stock);
-            likes = likeController.getLikes(stock);
+            likeController.getLikes(stock, function(err, count){
+              //console.log('count', count); 
+              fetch('https://api.iextrading.com/1.0/stock/'+ stock + '/book')  
+                .then(res => res.json())
+                .then(data => {
+                  result = {stockdata:{"stock":stock, "price": data.quote.latestPrice,"likes":count}};
+                  res.json(result) 
+                }).catch(function(response){
+                  alert("No valid response");
+                });  
+            });
             console.log('likes',likes);
           }
-          fetch('https://api.iextrading.com/1.0/stock/'+ stock + '/book')  
-            .then(res => res.json())
-            .then(data => {
-              result = {stockdata:{"stock":stock, "price": data.quote.latestPrice,"likes":likes}};
-              res.json(result) 
-            }).catch(function(response){
-              alert("No valid response");
-            });  
         }
-          
-   
-     
       }
-
-
-  
-  });
-  
-  
-  //fetch();
-  
-    
+  });    
 };
