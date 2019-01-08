@@ -12,7 +12,7 @@ var expect = require('chai').expect;
 var MongoClient = require('mongodb');
 const fetch = require('node-fetch');
 
-const project = stocks;
+const project = 'stocks';
 
 const CONNECTION_STRING = process.env.DB; //MongoClient.connect(CONNECTION_STRING, function(err, db) {});
 
@@ -60,6 +60,8 @@ module.exports = function (app) {
               result = {stockdata:[{"stock":stock1,"price":data[stock1].quote.latestPrice,"rel_likes":1},
                  {"stock":stock2,"price":data[stock2].quote.latestPrice,"rel_likes":1}]};
               res.json(result) 
+            }).catch(function(response){
+              alert("No valid response");
             });  
         } else {
           stock = stock.toUpperCase();
@@ -68,6 +70,8 @@ module.exports = function (app) {
             .then(data => {
               result = {stockdata:{"stock":stock, price:data.quote.latestPrice,"rel_likes":1}};
               res.json(result) 
+            }).catch(function(response){
+              alert("No valid response");
             });  
         }
           
