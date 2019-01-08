@@ -18,7 +18,25 @@ module.exports = function (app) {
 
   app.route('/api/stock-prices')
     .get(function (req, res){
-        //console.log(req.query);
+      console.log(req.query);
+    
+      if(req.query.like) {
+        //get ip of user
+        const userIp = req.connection.remoteAddress
+        //check database for ip
+        
+        MongoClient.connect(CONNECTION_STRING, function(err, db) {
+          db.
+        });
+        
+        //if there update stock liked
+        //if not add stock to db under ip address
+        
+        //query database for stock and return number of results
+      }
+    
+    
+    
       if(req.query.stock) {
         let result =[];
         let stock = req.query.stock
