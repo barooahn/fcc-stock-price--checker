@@ -12,6 +12,8 @@ var expect = require('chai').expect;
 var MongoClient = require('mongodb');
 const fetch = require('node-fetch');
 
+const project = stocks;
+
 const CONNECTION_STRING = process.env.DB; //MongoClient.connect(CONNECTION_STRING, function(err, db) {});
 
 module.exports = function (app) {
@@ -26,7 +28,15 @@ module.exports = function (app) {
         //check database for ip
         
         MongoClient.connect(CONNECTION_STRING, function(err, db) {
-          db.
+            const collection = db.collection(project);
+            db.collection.findAndModify({
+              query: { ip: userIp },
+              update: {
+                $setOnInsert: { ip: userIp,  }
+              },
+              new: true,   // return new doc if one is upserted
+              upsert: true // insert the document if it does not exist
+            })
         });
         
         //if there update stock liked
