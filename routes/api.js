@@ -27,17 +27,22 @@ module.exports = function (app) {
         if (typeof stock == 'object' ){
           const stock1 = stock[0].toUpperCase();
           const stock2 = stock[1].toUpperCase();
-          const request = async () => {  
-            const response = await fetch('https://api.iextrading.com/1.0/stock/market/batch?symbols='+stock1+','+stock2+'&types=quote');
-            const data = await response.json();
+          // const request = async () => {  
+          //   const response = await fetch('https://api.iextrading.com/1.0/stock/market/batch?symbols='+stock1+','+stock2+'&types=quote');
+          //   const data = await response.json();
+          //   result = [{"stock":stock1,"price":data[stock1].quote.latestPrice,"rel_likes":1},
+          //            {"stock":stock2,"price":data[stock2].quote.latestPrice,"rel_likes":1}];
+          //   res.json(result);
+          // }    
+ //                  const request = async () => {  
+            const response = fetch('https://api.iextrading.com/1.0/stock/market/batch?symbols='+stock1+','+stock2+'&types=quote');
+            const data = response.json();
             result = [{"stock":stock1,"price":data[stock1].quote.latestPrice,"rel_likes":1},
                      {"stock":stock2,"price":data[stock2].quote.latestPrice,"rel_likes":1}];
             res.json(result);
-          }    
-          request();
-//         loops = 2} 
-//         for (let i = 0; i < loops; i ++){ 
-//           console.log(stock)  
+ //         } 
+ //         request();
+
 //           const request = async (stock) => {  
 //             const response =  await fetch('https://api.iextrading.com/1.0/stock/'+ stock + '/book')
 //             const data = await response.json();
