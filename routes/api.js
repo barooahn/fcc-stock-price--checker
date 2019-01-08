@@ -9,12 +9,7 @@
 'use strict';
 
 var expect = require('chai').expect;
-var MongoClient = require('mongodb');
-const fetch = require('node-fetch');
-
-const project = 'stocks';
-
-const CONNECTION_STRING = process.env.DB; //MongoClient.connect(CONNECTION_STRING, function(err, db) {});
+var likeController = require("../controllers/likes")
 
 module.exports = function (app) {
       
@@ -25,48 +20,7 @@ module.exports = function (app) {
   
   app.route('/api/stock-prices')
     .get(function (req, res){
-    
-    
-     const getLikes = (stock) => {
-        let result; 
-        MongoClient.connect(CONNECTION_STRING, function(err, db) {
-          const collection = db.collection(project);
-          db.collection.find({
-            query: { stock: stock },
-            function(err,docs){
-              if(err) throw(err)
-              result = docs.count()
-            }  
-          });
-          db.close();
-          return result
-        }); 
-      }
 
-      //addlike
-      const addLike = (userIp, stock) => {
-        //check database for userIp
-        //if not there save userIp, stock
-        //if there update stock
-
-        MongoClient.connect(CONNECTION_STRING, function(err, db) {
-          const collection = db.collection(project);
-          db.collection.findAndModify({
-            query: { userIp: userIp },
-            update: {
-              $setOnInsert: { stock: stock },
-            },
-            new: true,   // return new doc if one is upserted
-            upsert: true}, // insert the document if it does not exist
-            function(err,doc){
-              if(err) throw(err)
-            }  
-          );
-          db.close();
-        });
-      }
-    
-    
       console.log(req.query);
      
       if(req.query.stock) {
@@ -92,8 +46,8 @@ module.exports = function (app) {
             const userIp = req.connection.remoteAddress;
             const like = req.query.like;   
             console.log(userIp);
-            this.addLike(userIp, stock);
-            likes = this.getLikes(stock);
+            likeController.addLike(userIp, stock);
+            likes = likeController.getLikes(stock);
             console.log('likes',likes);
           }
           fetch('https://api.iextrading.com/1.0/stock/'+ stock + '/book')  
