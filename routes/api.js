@@ -22,28 +22,25 @@ module.exports = function (app) {
       if(req.query.stock) {
         let result =[];
         let stock = req.query.stock
-        //console.log(stock1);
         let loops = 1;
         if (typeof stock == 'object' ){
           const stock1 = stock[0].toUpperCase();
           const stock2 = stock[1].toUpperCase();
-            fetch('https://api.iextrading.com/1.0/stock/market/batch?symbols='+stock1+','+stock2+'&types=quote')
-                .then(res => res.json())
-                .then(data => {
-                  result = {stockdata:[{"stock":stock1,"price":data[stock1].quote.latestPrice,"rel_likes":1},
-                     {"stock":stock2,"price":data[stock2].quote.latestPrice,"rel_likes":1}]};
-                  res.json(result) 
-                });  
+          fetch('https://api.iextrading.com/1.0/stock/market/batch?symbols='+stock1+','+stock2+'&types=quote')
+            .then(res => res.json())
+            .then(data => {
+              result = {stockdata:[{"stock":stock1,"price":data[stock1].quote.latestPrice,"rel_likes":1},
+                 {"stock":stock2,"price":data[stock2].quote.latestPrice,"rel_likes":1}]};
+              res.json(result) 
+            });  
         } else {
           stock = stock.toUpperCase();
-          console.log(stock);
           fetch('https://api.iextrading.com/1.0/stock/'+ stock + '/book')  
-          .then(res => res.json())
-                .then(data => {
-            console.log(data);
-                  result = {stockdata:{"stock":stock, price:data.quote.latestPrice,"rel_likes":1}};
-                  res.json(result) 
-                });  
+            .then(res => res.json())
+            .then(data => {
+              result = {stockdata:{"stock":stock, price:data.quote.latestPrice,"rel_likes":1}};
+              res.json(result) 
+            });  
         }
           
    

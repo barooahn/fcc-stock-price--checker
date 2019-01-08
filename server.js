@@ -20,7 +20,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 //security
-app.use(helmet.contentSecurityPolicy({directives: {defaultSrc: ["'self'", "https://fcc-stock-price--checker.glitch.me"], scriptSrc: ["'self'", "https://fcc-stock-price--checker.glitch.me", "https://code.jquery.com/jquery-2.2.1.min.js"], styleSrc : ["'self'"]}}))
+//app.use(helmet.contentSecurityPolicy({directives: {defaultSrc: ["'self'", "baseUri"], scriptSrc: ["'self'", "unsafeInline", "https://code.jquery.com/jquery-2.2.1.min.js"], styleSrc : ["'self'"]}}))
 
 //Index page (static HTML)
 app.route('/')
