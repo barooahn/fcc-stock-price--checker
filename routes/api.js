@@ -77,11 +77,13 @@ app.route('/api/stock-prices')
               const like = req.query.like;   
               likeController.getLikes(stock)
                .then((counts) => {
-                  console.log('count', counts); 
+                  console.log('count', counts);
+                  let count;
+                  Array.isArray(counts)? count = counts[1] : count = counts;  
                   fetch('https://api.iextrading.com/1.0/stock/'+ stock + '/book')  
                     .then(res => res.json())
                     .then(data => {
-                      result = {stockdata:{"stock":stock, "price": data.quote.latestPrice,"likes":counts[1]}};
+                      result = {stockdata:{"stock":stock, "price": data.quote.latestPrice,"likes":count}};
                       res.json(result) 
                     }).catch(function(res){
                       res.send("Cannot find stock");
