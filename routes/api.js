@@ -10,7 +10,8 @@
 
 var expect = require('chai').expect;
 const fetch = require('node-fetch');
-var likeController = require("../controllers/likes")
+const likeController = require("../controllers/likes");
+const async = require('async');
 
 module.exports = function (app) {
       
@@ -30,25 +31,18 @@ module.exports = function (app) {
         let stock = req.query.stock
         let loops = 1;
         if (typeof stock == 'object'){
-           if(req.query.like) {
-          
-            async.parallel([   
-                likeController.getLikes(stock, count),
-                likeController.getLikes(stock, count)
-            ],
-
-
-            function(err, results) {
-              // results is array containing array of results of your queries
-            });
-             
-             
-          
-           }
-          
-          
           const stock1 = stock[0].toUpperCase();
           const stock2 = stock[1].toUpperCase();
+          if(req.query.like) {
+
+          async.map([stock1, stock2], likeController.getLikes(stock, callback), function(err, results) {
+              // results is now an array of stats for each file
+          });
+
+
+          }
+          
+          
           fetch('https://api.iextrading.com/1.0/stock/market/batch?symbols='+stock1+','+stock2+'&types=quote')
             .then(res => res.json())
             .then(data => {
