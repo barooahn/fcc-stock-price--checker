@@ -26,19 +26,17 @@ const addLike = function(userIp, stock) {
 }
 
 
-const getLikes = function(stock) {
+const getLikes = function(stock, callback) {
   let likes;
   MongoClient.connect(CONNECTION_STRING, function(err, db) {
     const collection = db.collection(project);
     collection.count({stock: stock}, function(err,count){
         if(err) throw(err);
-        likes = count;
+        callback(null, count);   
         db.close();  
       }  
     );
   }); 
-  console.log('likes in', likes);   
-  return 1;
 }
 
 module.exports = {
