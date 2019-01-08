@@ -30,10 +30,12 @@ const getLikes = function(stock) {
   let result; 
   MongoClient.connect(CONNECTION_STRING, function(err, db) {
     const collection = db.collection(project);
-    result = collection.find({stock: stock}, function(err,docs){
+    result = collection.count({stock: stock}, function(err,count){
         if(err) throw(err)
+        result = count;
+        console.log('çount',count);
       }  
-    ).count();
+    );
     db.close();
     return result
   }); 
