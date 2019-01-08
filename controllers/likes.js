@@ -45,15 +45,19 @@ const getLikes = function(stock) {
 }
 
 function getStock(counts, stock) {
-  let count;
-  Array.isArray(counts)? count = counts[1] : count = counts;  
-  fetch('https://api.iextrading.com/1.0/stock/'+ stock + '/book')  
-    .then(res => res.json())
-    .then(data => {
-      return {stockdata:{"stock":stock, "price": data.quote.latestPrice,"likes":count}};
-    }).catch(function(res){
-      res.send("Cannot find stock");
-    }); 
+  return new Promise((resolve, reject) => {
+    let count;
+    Array.isArray(counts)? count = counts[1] : count = counts;  
+    fetch('https://api.iextrading.com/1.0/stock/'+ stock + '/book')  
+      .then(res => res.json())
+      .then(data => {
+        const result = {stockdata:{"stock":stock, "price": data.quote.latestPrice,"likes":count}};
+        //console.log(result);
+        resolve(result);
+      }).catch(function(res){
+        res.send("Cannot find stock");
+      }); 
+  });
 }
 
 module.exports = {

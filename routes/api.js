@@ -61,7 +61,8 @@ module.exports = function (app) {
                 likeController.addLike(userIp, stock),
                 likeController.getLikes(stock)
               ]).then((counts) => {
-                   res.json(likeController.getStock(counts, stock));
+                   res.json(likeController.getStock(counts, stock))
+                  .then
                 }, function(err) {
                   res.send("database error" + err);
                 }
