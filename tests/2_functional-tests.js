@@ -20,10 +20,14 @@ suite('Functional Tests', function() {
       test('1 stock', function(done) {
        chai.request(server)
         .get('/api/stock-prices')
-        .query({stock: 'goog'})
+        .query({stock: 'aapl'})
         .end(function(err, res){
           
-          //complete this one too
+          assert.property(res.body, 'stockData', 'Should have stockdata');
+          assert.property(res.body.stockdata, 'stock', ' should stock');
+          assert.property(res.body.stockdata, 'price', ' should stock');
+          assert.property(res.body.stockdata, 'likes', ' should stock');
+                     assert.equal(res.body.title, 'testing title');
           
           done();
         });

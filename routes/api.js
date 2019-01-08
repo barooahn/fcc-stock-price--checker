@@ -61,11 +61,19 @@ module.exports = function (app) {
                 likeController.addLike(userIp, stock),
                 likeController.getLikes(stock)
               ]).then((counts) => {
-                   res.json(likeController.getStock(counts, stock))
-                  .then
-                }, function(err) {
-                  res.send("database error" + err);
-                }
+                    let count;
+                    Array.isArray(counts)? count = counts[1] : count = counts;  
+                    fetch('https://api.iextrading.com/1.0/stock/'+ stock + '/book')  
+                      .then(res => res.json())
+                      .then(data => {
+                        result = {stockdata:{"stock":stock, "price": data.quote.latestPrice,"likes":count}};
+                        res.json(result) 
+                      }).catch(function(res){
+                        res.send("Cannot find stock");
+                      });  
+                  }, function(err) {
+                    res.send("database error" + err);
+                 }
               );
             } else {
                 const like = req.query.like;   
