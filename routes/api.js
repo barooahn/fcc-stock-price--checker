@@ -20,80 +20,72 @@ module.exports = function (app) {
     //return count of results
  
   
-app.route('/api/stock-prices')
-    .get(function (req, res){   
-        if(req.query.stock) {
-        let result;
-        let likes;
-        let stock = req.query.stock
-        let loops = 1;
-        if (typeof stock == 'object'){
-          const stock1 = stock[0].toUpperCase();
-          const stock2 = stock[1].toUpperCase();
-          Promise.all([
-            likeController.getLikes(stock1),
-            likeController.getLikes(stock2)
-          ]).then((counts) => {
-            const rel_likes1 = (counts[0] - counts[1]);
-            const rel_likes2 = rel_likes1 * -1;
-            fetch('https://api.iextrading.com/1.0/stock/market/batch?symbols='+stock1+','+stock2+'&types=quote')
-              .then(res => res.json())
-              .then(data => {
-                result = {stockdata:[{"stock":stock1,"price":data[stock1].quote.latestPrice,"rel_likes":rel_likes1},
-                   {"stock":stock2,"price":data[stock2].quote.latestPrice,"rel_likes":rel_likes2}]};
-                res.json(result) 
-              }).catch(function(res){
-                res.send("Cannot find stock");
-              });  
-          }).catch((err) => {
-             res.send("database error" + err);
-          })  
-  
-          if(req.query.like) {res.send('You can only like one stock')};
-          
-        } else if(req.query.like) {
-          stock = stock.toUpperCase();
-          
-            const userIp = req.connection.remoteAddress;
-            const like = req.query.like;   
-            //console.log(userIp);
+  app.route('/api/stock-prices')
+      .get(function (req, res){   
+          if(req.query.stock) {
+          let result;
+          let likes;
+          let stock = req.query.stock
+          let loops = 1;
+          if (typeof stock == 'object'){
+            const stock1 = stock[0].toUpperCase();
+            const stock2 = stock[1].toUpperCase();
             Promise.all([
-              likeController.addLike(userIp, stock),
-              likeController.getLikes(stock)
+              likeController.getLikes(stock1),
+              likeController.getLikes(stock2)
             ]).then((counts) => {
-              console.log('count', counts); 
-              fetch('https://api.iextrading.com/1.0/stock/'+ stock + '/book')  
+              const rel_likes1 = (counts[0] - counts[1]);
+              const rel_likes2 = rel_likes1 * -1;
+              fetch('https://api.iextrading.com/1.0/stock/market/batch?symbols='+stock1+','+stock2+'&types=quote')
                 .then(res => res.json())
                 .then(data => {
-                  result = {stockdata:{"stock":stock, "price": data.quote.latestPrice,"likes":counts[1]}};
+                  result = {stockdata:[{"stock":stock1,"price":data[stock1].quote.latestPrice,"rel_likes":rel_likes1},
+                     {"stock":stock2,"price":data[stock2].quote.latestPrice,"rel_likes":rel_likes2}]};
                   res.json(result) 
                 }).catch(function(res){
                   res.send("Cannot find stock");
                 });  
-            }, function(err) {
-              res.send("database error" + err);
-            });
-          } else {
+            }).catch((err) => {
+               res.send("database error" + err);
+            })  
+
+            if(req.query.like) {res.send('You can only like one stock')};
+
+          } else if(req.query.like) {
+            stock = stock.toUpperCase();
+
+              const userIp = req.connection.remoteAddress;
               const like = req.query.like;   
-              likeController.getLikes(stock)
-               .then((counts) => {
-                  console.log('count', counts);
-                  let count;
-                  Array.isArray(counts)? count = counts[1] : count = counts;  
-                  fetch('https://api.iextrading.com/1.0/stock/'+ stock + '/book')  
-                    .then(res => res.json())
-                    .then(data => {
-                      result = {stockdata:{"stock":stock, "price": data.quote.latestPrice,"likes":count}};
-                      res.json(result) 
-                    }).catch(function(res){
-                      res.send("Cannot find stock");
-                    });  
+              //console.log(userIp);
+              Promise.all([
+                likeController.addLike(userIp, stock),
+                likeController.getLikes(stock)
+              ]).then((counts) => {
+                   res.json(likeController.getStock(counts, stock));
                 }, function(err) {
                   res.send("database error" + err);
-               });
-            
+                }
+              );
+            } else {
+                const like = req.query.like;   
+                likeController.getLikes(stock)
+                 .then((counts) => {
+                    let count;
+                    Array.isArray(counts)? count = counts[1] : count = counts;  
+                    fetch('https://api.iextrading.com/1.0/stock/'+ stock + '/book')  
+                      .then(res => res.json())
+                      .then(data => {
+                        result = {stockdata:{"stock":stock, "price": data.quote.latestPrice,"likes":count}};
+                        res.json(result) 
+                      }).catch(function(res){
+                        res.send("Cannot find stock");
+                      });  
+                  }, function(err) {
+                    res.send("database error" + err);
+                 });
+
+            }
           }
-        }
-    }
-    
+      }
 )};
+
