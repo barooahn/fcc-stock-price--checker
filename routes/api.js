@@ -39,10 +39,10 @@ module.exports = function (app) {
                 .then(res => res.json())
                 .then(json => console.log(json));  
           
-          const data = response.json();
-            result = [{"stock":stock1,"price":data[stock1].quote.latestPrice,"rel_likes":1},
-                     {"stock":stock2,"price":data[stock2].quote.latestPrice,"rel_likes":1}];
-            res.json(result);
+          // const data = response.json();
+          //   result = [{"stock":stock1,"price":data[stock1].quote.latestPrice,"rel_likes":1},
+          //            {"stock":stock2,"price":data[stock2].quote.latestPrice,"rel_likes":1}];
+          //   res.json(result);
  //         } 
  //         request();
 
