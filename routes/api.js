@@ -53,7 +53,6 @@ module.exports = function (app) {
           })  
   
           if(req.query.like) {res.send('You can only like one stock')};
-         
           
         } else {
           stock = stock.toUpperCase();
@@ -64,7 +63,7 @@ module.exports = function (app) {
             likeController.addLike(userIp, stock);    
             likeController.getLikes(stock)
               .then(function(count) {
-              //console.log('count', count); 
+              console.log('count', count); 
               fetch('https://api.iextrading.com/1.0/stock/'+ stock + '/book')  
                 .then(res => res.json())
                 .then(data => {
