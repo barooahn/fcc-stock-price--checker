@@ -41,7 +41,7 @@ module.exports = function (app) {
           .then(res => res.json())
                 .then(data => {
             console.log(data);
-                  result = {stockdata:{"stock":data[stock].quote.latestPrice,"rel_likes":1}};
+                  result = {stockdata:{"stock":stock, price:data.quote.latestPrice,"rel_likes":1}};
                   res.json(result) 
                 });  
         }
