@@ -17,59 +17,56 @@ const project = 'stocks';
 const CONNECTION_STRING = process.env.DB; //MongoClient.connect(CONNECTION_STRING, function(err, db) {});
 
 module.exports = function (app) {
-  
-  
-
-  
+      
   //getlikes
     //find stock 
     //return count of results
-  const getLikes = (stock) => {
-    let result; 
-    MongoClient.connect(CONNECTION_STRING, function(err, db) {
-      const collection = db.collection(project);
-      db.collection.find({
-        query: { stock: stock },
-        function(err,docs){
-          if(err) throw(err)
-          result = docs.count()
-        }  
-      });
-      db.close();
-      return result
-    }); 
-  }
+ 
   
-  //addlike
-  const addLike = (userIp, stock) => {
-      //check database for userIp
-      //if not there save userIp, stock
-      //if there update stock
-     
-        MongoClient.connect(CONNECTION_STRING, function(err, db) {
-            const collection = db.collection(project);
-            db.collection.findAndModify({
-              query: { userIp: userIp },
-              update: {
-                $setOnInsert: { stock: stock },
-              },
-              new: true,   // return new doc if one is upserted
-              upsert: true}, // insert the document if it does not exist
-              function(err,doc){
-                if(err) throw(err)
-              }  
-            );
-            db.close();
-        });
-  }
-  
-  
-  
-  
-  
-
   app.route('/api/stock-prices')
     .get(function (req, res){
+    
+    
+     const getLikes = (stock) => {
+        let result; 
+        MongoClient.connect(CONNECTION_STRING, function(err, db) {
+          const collection = db.collection(project);
+          db.collection.find({
+            query: { stock: stock },
+            function(err,docs){
+              if(err) throw(err)
+              result = docs.count()
+            }  
+          });
+          db.close();
+          return result
+        }); 
+      }
+
+      //addlike
+      const addLike = (userIp, stock) => {
+        //check database for userIp
+        //if not there save userIp, stock
+        //if there update stock
+
+        MongoClient.connect(CONNECTION_STRING, function(err, db) {
+          const collection = db.collection(project);
+          db.collection.findAndModify({
+            query: { userIp: userIp },
+            update: {
+              $setOnInsert: { stock: stock },
+            },
+            new: true,   // return new doc if one is upserted
+            upsert: true}, // insert the document if it does not exist
+            function(err,doc){
+              if(err) throw(err)
+            }  
+          );
+          db.close();
+        });
+      }
+    
+    
       console.log(req.query);
      
       if(req.query.stock) {
@@ -97,11 +94,12 @@ module.exports = function (app) {
             console.log(userIp);
             this.addLike(userIp, stock);
             likes = this.getLikes(stock);
+            console.log('likes',likes);
           }
           fetch('https://api.iextrading.com/1.0/stock/'+ stock + '/book')  
             .then(res => res.json())
             .then(data => {
-              result = {stockdata:{"stock":stock, price:data.quote.latestPrice,"likes":likes}};
+              result = {stockdata:{"stock":stock, "price": data.quote.latestPrice,"likes":likes}};
               res.json(result) 
             }).catch(function(response){
               alert("No valid response");
