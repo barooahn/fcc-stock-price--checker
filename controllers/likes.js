@@ -1,9 +1,6 @@
-var MongoClient = require('mongodb');
-
-
+const MongoClient = require('mongodb');
 const CONNECTION_STRING = process.env.DB; //MongoClient.connect(CONNECTION_STRING, function(err, db) {});
 const project = 'stocks';
-
 
 //addlike
 const addLike = function(userIp, stock) {
@@ -33,14 +30,16 @@ const getLikes = function(stock) {
   let result; 
   MongoClient.connect(CONNECTION_STRING, function(err, db) {
     const collection = db.collection(project);
-    db.collection.find({
-      query: { stock: stock },
-      function(err,docs){
+    db.collection.find({stock: stock}, function(err,docs){
         if(err) throw(err)
         result = docs.count()
       }  
-    });
+    );
     db.close();
     return result
   }); 
+}
+
+module.exports = {
+  getLikes: getLikes, addLike:addLike
 }
