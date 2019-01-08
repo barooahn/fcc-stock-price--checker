@@ -17,16 +17,11 @@ const project = 'stocks';
 const CONNECTION_STRING = process.env.DB; //MongoClient.connect(CONNECTION_STRING, function(err, db) {});
 
 module.exports = function (app) {
+  
+  const likes = (ip, stock) => {
+              //get ip of user
 
-  app.route('/api/stock-prices')
-    .get(function (req, res){
-      console.log(req.query);
-    
-      if(req.query.like) {
-        //get ip of user
-        const userIp = req.connection.remoteAddress
-        //check database for ip
-        
+        //check database for ip      
         MongoClient.connect(CONNECTION_STRING, function(err, db) {
             const collection = db.collection(project);
             db.collection.findAndModify({
@@ -38,15 +33,21 @@ module.exports = function (app) {
               upsert: true // insert the document if it does not exist
             })
         });
-        
-        //if there update stock liked
+              //if there update stock liked
         //if not add stock to db under ip address
         
         //query database for stock and return number of results
-      }
-    
-    
-    
+  }
+  
+  
+  
+  
+  
+
+  app.route('/api/stock-prices')
+    .get(function (req, res){
+      console.log(req.query);
+     
       if(req.query.stock) {
         let result =[];
         let stock = req.query.stock
@@ -65,10 +66,15 @@ module.exports = function (app) {
             });  
         } else {
           stock = stock.toUpperCase();
+          if(req.query.like) {
+            const userIp = req.connection.remoteAddress;
+            const like = req.query.like;      
+            const likes = this.likes(userIp, stock);
+          }
           fetch('https://api.iextrading.com/1.0/stock/'+ stock + '/book')  
             .then(res => res.json())
             .then(data => {
-              result = {stockdata:{"stock":stock, price:data.quote.latestPrice,"rel_likes":1}};
+              result = {stockdata:{"stock":stock, price:data.quote.latestPrice,"likes":1}};
               res.json(result) 
             }).catch(function(response){
               alert("No valid response");
