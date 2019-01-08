@@ -27,8 +27,8 @@ suite('Functional Tests', function() {
           assert.property(res.body.stockdata, 'stock', ' should stock');
           assert.property(res.body.stockdata, 'price', ' should stock');
           assert.property(res.body.stockdata, 'likes', ' should stock');
-                     assert.equal(res.body.title, 'testing title');
-          
+          assert.equal(res.body.stockdata.stock, 'aapl');
+        
           done();
         });
       });
