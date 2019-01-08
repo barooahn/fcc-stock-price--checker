@@ -33,9 +33,23 @@ module.exports = function (app) {
         if (typeof stock == 'object'){
           const stock1 = stock[0].toUpperCase();
           const stock2 = stock[1].toUpperCase();
-          let promise1;
-          let promise2;
-             
+
+          Promise.all([
+            likeController.getLikes(stock1),
+            likeController.getLikes(stock2)
+          ]).then((counts) => {
+            counts.reduce(count => ,0)
+          }).catch((error) => {
+            throw(err);
+          })  
+          
+          likeController.getLikes(stock1)
+              .then(function(image) {
+            console.log('Image loaded', image);
+          }, function(err) {
+            console.error('Error loading image', err);
+          });
+          
           likeController.getLikes(stock1, function(err, count){
             promise1 = count;    
             console.log(count);

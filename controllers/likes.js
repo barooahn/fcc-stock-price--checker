@@ -25,7 +25,6 @@ const addLike = function(userIp, stock) {
   });
 }
 
-
 const getLikes = function(stock) { 
   return new Promise((resolve, reject) => {
     let likes;
@@ -38,6 +37,8 @@ const getLikes = function(stock) {
       });
     }); 
   });
-} = {
+}
+
+module.exports = {
   getLikes: getLikes, addLike:addLike
 }
