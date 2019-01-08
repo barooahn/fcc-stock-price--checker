@@ -20,12 +20,9 @@ module.exports = function (app) {
     //return count of results
  
   
-  app.route('/api/stock-prices')
-    .get(function (req, res){
-
-      console.log(req.query);
-     
-      if(req.query.stock) {
+app.route('/api/stock-prices')
+    .get(function (req, res){   
+        if(req.query.stock) {
         let result;
         let likes;
         let stock = req.query.stock
@@ -79,22 +76,22 @@ module.exports = function (app) {
           } else {
               const like = req.query.like;   
               likeController.getLikes(stock)
-           .then((counts) => {
-              console.log('count', counts); 
-              fetch('https://api.iextrading.com/1.0/stock/'+ stock + '/book')  
-                .then(res => res.json())
-                .then(data => {
-                  result = {stockdata:{"stock":stock, "price": data.quote.latestPrice,"likes":counts[1]}};
-                  res.json(result) 
-                }).catch(function(res){
-                  res.send("Cannot find stock");
-                });  
-            }, function(err) {
-              res.send("database error" + err);
-            });
+               .then((counts) => {
+                  console.log('count', counts); 
+                  fetch('https://api.iextrading.com/1.0/stock/'+ stock + '/book')  
+                    .then(res => res.json())
+                    .then(data => {
+                      result = {stockdata:{"stock":stock, "price": data.quote.latestPrice,"likes":counts[1]}};
+                      res.json(result) 
+                    }).catch(function(res){
+                      res.send("Cannot find stock");
+                    });  
+                }, function(err) {
+                  res.send("database error" + err);
+               });
             
           }
         }
-      }
-  });    
-};
+    }
+    
+)};
