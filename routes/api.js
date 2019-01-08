@@ -33,14 +33,24 @@ module.exports = function (app) {
         if (typeof stock == 'object'){
           const stock1 = stock[0].toUpperCase();
           const stock2 = stock[1].toUpperCase();
-          if(req.query.like) {
-
-          async.map([stock1, stock2], likeController.getLikes(stock, callback), function(err, results) {
-              // results is now an array of stats for each file
+          
+          
+          var promise1 = likeController.getLikes(stock, function(err, count){});
+          var promise2 = 42;
+          var promise3 = new Promise(function(resolve, reject) {
+            setTimeout(resolve, 100, 'foo');
           });
 
+          Promise.all([promise1, promise2, promise3]).then(function(values) {
+            console.log(values);
+          });
+          if(req.query.like) {
 
-          }
+
+                             
+             async.parallel([stock1,stock2], likeController.getLikes(err, results) {
+                  // optional callback
+              });
           
           
           fetch('https://api.iextrading.com/1.0/stock/market/batch?symbols='+stock1+','+stock2+'&types=quote')
