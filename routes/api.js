@@ -9,6 +9,7 @@
 'use strict';
 
 var expect = require('chai').expect;
+const fetch = require('node-fetch');
 var likeController = require("../controllers/likes")
 
 module.exports = function (app) {
